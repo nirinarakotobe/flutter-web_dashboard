@@ -34,7 +34,7 @@ class DashboardApp extends StatefulWidget {
   static DashboardRepository _mockApiBuilder(UserRepository user) =>
       DashboardMockData()..fillWithMockData();
 
-  static DashboardRepository _apiBuilder(UserRepository user) =>
+  static DashboardRepository _firebaseApiBuilder(UserRepository user) =>
       DashboardFirebaseData(FirebaseFirestore.instance, user.uid);
 
   final AuthRepository auth;
@@ -43,7 +43,7 @@ class DashboardApp extends StatefulWidget {
   /// Runs the app using Firebase
   DashboardApp.firebase({super.key})
       : auth = FirebaseAuthData(),
-        apiBuilder = _apiBuilder;
+        apiBuilder = _firebaseApiBuilder;
 
   /// Runs the app using mock data
   DashboardApp.mock({super.key})
