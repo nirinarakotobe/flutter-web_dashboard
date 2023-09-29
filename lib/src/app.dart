@@ -31,14 +31,17 @@ typedef ApiBuilder = DashboardRepository Function(UserRepository user);
 
 /// An app that displays a personalized dashboard.
 class DashboardApp extends StatefulWidget {
-  static DashboardRepository _mockApiBuilder(UserRepository user) =>
-      DashboardMockData()..fillWithMockData();
-
-  static DashboardRepository _firebaseApiBuilder(UserRepository user) =>
-      DashboardFirebaseData(FirebaseFirestore.instance, user.uid);
-
   final AuthRepository auth;
   final ApiBuilder apiBuilder;
+  
+  static DashboardRepository _mockApiBuilder(UserRepository user) {
+    return DashboardMockData()..fillWithMockData();
+  }
+
+  static DashboardRepository _firebaseApiBuilder(UserRepository user) {
+    return DashboardFirebaseData(FirebaseFirestore.instance, user.uid);
+  }
+
 
   /// Runs the app using Firebase
   DashboardApp.firebase({super.key})
