@@ -5,12 +5,9 @@
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:web_dashboard/src/data/repositories/user.dart';
+import 'package:web_dashboard/src/data/repositories/auth.dart';
 
-import '../repositories/auth.dart';
-import 'firebase.user.dart';
-
-class FirebaseAuthData implements AuthRepository {
+class AuthFirebaseData implements AuthRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -18,7 +15,7 @@ class FirebaseAuthData implements AuthRepository {
   Future<bool> get isSignedIn => _googleSignIn.isSignedIn();
 
   @override
-  Future<UserRepository> signIn() async {
+  Future<SessionUserRepository> signIn() async {
     try {
       return await _signIn();
     } on PlatformException {
@@ -26,7 +23,7 @@ class FirebaseAuthData implements AuthRepository {
     }
   }
 
-  Future<UserRepository> _signIn() async {
+  Future<SessionUserRepository> _signIn() async {
     GoogleSignInAccount? googleUser;
     if (await isSignedIn) {
       googleUser = await _googleSignIn.signInSilently();
@@ -41,7 +38,7 @@ class FirebaseAuthData implements AuthRepository {
 
     var authResult = await _auth.signInWithCredential(credential);
 
-    return FirebaseUserData(authResult.user!.uid);
+    return UserFirebaseData(authResult.user!.uid);
   }
 
   @override
@@ -51,4 +48,11 @@ class FirebaseAuthData implements AuthRepository {
       _googleSignIn.signOut(),
     ]);
   }
+}
+
+class UserFirebaseData implements SessionUserRepository {
+  @override
+  final String uid;
+
+  UserFirebaseData(this.uid);
 }

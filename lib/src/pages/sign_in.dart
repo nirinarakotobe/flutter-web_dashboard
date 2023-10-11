@@ -3,13 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:web_dashboard/src/data/repositories/user.dart';
-
-import '../data/repositories/auth.dart';
+import 'package:web_dashboard/src/data/repositories/auth.dart';
 
 class SignInPage extends StatelessWidget {
   final AuthRepository auth;
-  final ValueChanged<UserRepository> onSuccess;
+  final ValueChanged<SessionUserRepository> onSuccess;
 
   const SignInPage({
     required this.auth,
@@ -29,7 +27,7 @@ class SignInPage extends StatelessWidget {
 
 class SignInButton extends StatefulWidget {
   final AuthRepository auth;
-  final ValueChanged<UserRepository> onSuccess;
+  final ValueChanged<SessionUserRepository> onSuccess;
 
   const SignInButton({
     required this.auth,
@@ -56,16 +54,16 @@ class _SignInButtonState extends State<SignInButton> {
   Future<bool> _checkIfSignedIn() async {
     var alreadySignedIn = await widget.auth.isSignedIn;
     if (alreadySignedIn) {
-      var user = await widget.auth.signIn();
-      widget.onSuccess(user);
+      var sessionUser = await widget.auth.signIn();
+      widget.onSuccess(sessionUser);
     }
     return alreadySignedIn;
   }
 
   Future<void> _signIn() async {
     try {
-      var user = await widget.auth.signIn();
-      widget.onSuccess(user);
+      var sessionUser = await widget.auth.signIn();
+      widget.onSuccess(sessionUser);
     } on SignInException {
       _showError();
     }
@@ -79,8 +77,7 @@ class _SignInButtonState extends State<SignInButton> {
         // If signed in, or the future is incomplete, show a circular
         // progress indicator.
         var alreadySignedIn = snapshot.data;
-        if (snapshot.connectionState != ConnectionState.done ||
-            alreadySignedIn == true) {
+        if (snapshot.connectionState != ConnectionState.done || alreadySignedIn == true) {
           return const CircularProgressIndicator();
         }
 

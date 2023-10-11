@@ -2,17 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:web_dashboard/src/data/repositories/user.dart';
+import 'package:web_dashboard/src/data/repositories/auth.dart';
 
-import '../repositories/auth.dart';
-import 'mock.user.dart';
-
-class MockAuthData implements AuthRepository {
+class AuthMockData implements AuthRepository {
   @override
   Future<bool> get isSignedIn async => false;
 
   @override
-  Future<UserRepository> signIn() async {
+  Future<SessionUserRepository> signIn() async {
     return MockUserData();
   }
 
@@ -20,4 +17,9 @@ class MockAuthData implements AuthRepository {
   Future signOut() async {
     return null;
   }
+}
+
+class MockUserData implements SessionUserRepository {
+  @override
+  String get uid => "123";
 }

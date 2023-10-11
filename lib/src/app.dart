@@ -8,11 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:web_dashboard/src/data/api/dashboard.firebase.dart';
 import 'package:web_dashboard/src/data/api/dashboard.mock.dart';
 import 'package:web_dashboard/src/data/repositories/dashboard.dart';
-import 'package:web_dashboard/src/data/repositories/user.dart';
 
 import 'data/repositories/auth.dart';
-import 'data/auth/firebase.auth.dart';
-import 'data/auth/mock.auth.dart';
+import 'data/auth/auth.firebase.dart';
+import 'data/auth/auth.mock.dart';
 import 'pages/home.dart';
 import 'pages/sign_in.dart';
 
@@ -27,30 +26,29 @@ class AppState {
 /// Creates a [DashboardRepository] for the given user. This allows users of this
 /// widget to specify whether [DashboardMockData] or [ApiBuilder] should be
 /// created when the user logs in.
-typedef ApiBuilder = DashboardRepository Function(UserRepository user);
+typedef ApiBuilder = DashboardRepository Function(SessionUserRepository sessionUser);
 
 /// An app that displays a personalized dashboard.
 class DashboardApp extends StatefulWidget {
   final AuthRepository auth;
   final ApiBuilder apiBuilder;
-  
-  static DashboardRepository _mockApiBuilder(UserRepository user) {
+
+  static DashboardRepository _mockApiBuilder(SessionUserRepository sessionUser) {
     return DashboardMockData()..fillWithMockData();
   }
 
-  static DashboardRepository _firebaseApiBuilder(UserRepository user) {
-    return DashboardFirebaseData(FirebaseFirestore.instance, user.uid);
+  static DashboardRepository _firebaseApiBuilder(SessionUserRepository sessionUser) {
+    return DashboardFirebaseData(FirebaseFirestore.instance, sessionUser.uid);
   }
-
 
   /// Runs the app using Firebase
   DashboardApp.firebase({super.key})
-      : auth = FirebaseAuthData(),
+      : auth = AuthFirebaseData(),
         apiBuilder = _firebaseApiBuilder;
 
   /// Runs the app using mock data
   DashboardApp.mock({super.key})
-      : auth = MockAuthData(),
+      : auth = AuthMockData(),
         apiBuilder = _mockApiBuilder;
 
   @override
@@ -117,8 +115,8 @@ class _SignInSwitcherState extends State<SignInSwitcher> {
     );
   }
 
-  void _handleSignIn(UserRepository user) {
-    widget.appState!.api = widget.apiBuilder!(user);
+  void _handleSignIn(SessionUserRepository sessionUser) {
+    widget.appState!.api = widget.apiBuilder!(sessionUser);
 
     setState(() {
       _isSignedIn = true;

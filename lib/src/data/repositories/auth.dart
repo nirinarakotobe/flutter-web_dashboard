@@ -2,12 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'user.dart';
-
 abstract class AuthRepository {
   Future<bool> get isSignedIn;
-  Future<UserRepository> signIn();
+  Future<SessionUserRepository> signIn();
   Future signOut();
 }
 
 class SignInException implements Exception {}
+
+abstract class SessionUserRepository {
+  String get uid;
+}

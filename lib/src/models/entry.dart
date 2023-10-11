@@ -4,10 +4,9 @@ import 'package:json_annotation/json_annotation.dart';
 /// A number tracked at a point in time.
 @JsonSerializable()
 class EntryModel {
-  int value;
+  int value;  
   @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)
   DateTime time;
-
   @JsonKey(includeFromJson: false)
   String? id;
 
